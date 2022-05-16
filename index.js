@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require('cors');
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const app=express();
 const port=process.env.PORT || 5000;
@@ -20,17 +20,38 @@ async function run(){
   try{
     await client.connect();
 
-    const productCollection=client.db("product-collection").collection("product");
+    const productCollection = client
+      .db("product-collection")
+      .collection("product");
 
+    //get data
+    //api:http://localhost:5000/products
+    app.get("/products", async (req, res) => {
+      const q = req.query;
+      console.log(q);
+      const cursor = productCollection.find(q);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
     //post product
-    app.post("/product",async(req,res)=>{
-      const data=req.body;
-      const result=await productCollection.insertOne(data);
+    //API://localhost:5000/product
+    http: app.post("/product", async (req, res) => {
+      const data = req.body;
+      const result = await productCollection.insertOne(data);
       console.log(data);
       res.send(result);
-    })
+    });
 
+    //delete
+    //api://localhost:5000/inventory/6282b84c0b4af063e414a0ce
+
+    http: app.delete("/inventory/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await productCollection.deleteOne(filter);
+      res.send(result);
+    });
     console.log("Database connected");
   }
   finally{
