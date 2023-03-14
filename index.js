@@ -26,9 +26,7 @@ function verifyJWT(req,res,next){
   next();
 }
 //connection
-
-
-const uri = `mongodb+srv://${process.env.DB_USR}:${process.env.DB_PASS}@warehouse.h6xxn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USR}:${process.env.DB_PASS}@warehouse.h6xxn.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
